@@ -1,0 +1,35 @@
+import React from 'react';
+
+const Login = () => {
+    return (
+        <div id="root">
+        <div style={{ position: 'relative', overflow: 'hidden', padding: '20px', minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+            <div className="bg-decoration" style={{ position: 'absolute', width: '200px', height: '200px', border: '3px solid #6366f1', borderRadius: '20px', opacity: 0.1, transform: 'rotate(45deg)', top: '-100px', left: '-100px', animation: 'float 6s ease-in-out infinite' }}></div>
+            <div className="bg-decoration" style={{ position: 'absolute', width: '200px', height: '200px', border: '3px solid #6366f1', borderRadius: '20px', opacity: 0.1, transform: 'rotate(45deg)', bottom: '-100px', right: '-100px', animation: 'float 6s ease-in-out infinite reverse' }}></div>
+            <div className="bg-decoration" style={{ position: 'absolute', width: '200px', height: '200px', border: '3px solid #6366f1', borderRadius: '20px', opacity: 0.1, transform: 'rotate(45deg)', top: '50%', left: '-150px', animation: 'float 8s ease-in-out infinite' }}></div>
+
+            <div className="container" style={{ background: 'rgba(255, 255, 255, 0.95)', backdropFilter: 'blur(10px)', borderRadius: '20px', padding: '40px', boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)', border: '1px solid rgba(255, 255, 255, 0.2)', width: '100%', maxWidth: '400px', position: 'relative', zIndex: 10 }}>
+                <h1 className="title" style={{ fontSize: '2.5rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '40px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', textTransform: 'uppercase', letterSpacing: '2px', textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)' }}>SEAT MASTER</h1>
+
+                <div className="success-message" id="successMessage"></div>
+
+                <h2 className="login-title" style={{ fontSize: '1.5rem', fontWeight: 'bold', textAlign: 'center', marginBottom: '30px', color: '#4a5568', textTransform: 'uppercase', letterSpacing: '1px' }}>LOGIN</h2>
+
+                <form id="loginForm">
+                    {/* Add input fields here */}
+                </form>
+
+                <div className="register-link">
+                    {/* Add register link here */}
+                </div>
+            </div>
+
+            <script>
+                {/* Add your JavaScript logic here */}
+            </script>
+        </div>
+        </div>
+    );
+};
+
+export default Login;
