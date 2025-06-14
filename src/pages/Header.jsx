@@ -1,8 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import React from "react";
 import "../components/landing.css";
 
-export default function Header({ loggedIn }) {
+export default function Header({
+  loggedIn,
+  userId,
+  onLogout,
+  onTransportasiClick,
+  onRouteClick,
+  onCapacityClick,
+  onBuyTicketClick,
+}) {
+  const navigate = useNavigate();
+
   return (
     <header className="allHeader">
       <div className="nav-container">
@@ -12,29 +22,51 @@ export default function Header({ loggedIn }) {
         <nav className="navbar">
           <ul className="nav-menu" id="navMenu">
             <li>
-              <a href="#transportasi">Transportasi</a>
+              {onTransportasiClick ? (
+                <button className="nav-btn" onClick={onTransportasiClick}>Transportasi</button>
+              ) : (
+                <a href="#transportasi">Transportasi</a>
+              )}
             </li>
             <li>
-              <a href="#route">Route</a>
+              {onRouteClick ? (
+                <button className="nav-btn" onClick={onRouteClick}>Route</button>
+              ) : (
+                <a href="#route">Route</a>
+              )}
             </li>
             <li>
-              <a href="#ticket">Capacity</a>
+              {onCapacityClick ? (
+                <button className="nav-btn" onClick={onCapacityClick}>Capacity</button>
+              ) : (
+                <a href="#ticket">Capacity</a>
+              )}
             </li>
             <li>
-              <a href="#ticket">Buy Ticket</a>
+              {onBuyTicketClick ? (
+                <button className="nav-btn" onClick={onBuyTicketClick}>Buy Ticket</button>
+              ) : (
+                <a href="#ticket">Buy Ticket</a>
+              )}
             </li>
           </ul>
         </nav>
         {!loggedIn ? (
-          <Link to="/login" className="loginBtn">
+          <button
+            className="loginBtn"
+            onClick={() => navigate("/login")}
+            title="Login"
+          >
             LOGIN
-          </Link>
-        ) : <div className="user-icon">👤</div>}
-        {/*<div className="hamburger" id="hamburger">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>*/}
+          </button>
+        ) : (
+          <span className="user-info">
+            <span className="user-id">{userId}</span>
+            <button className="logoutBtn" onClick={onLogout} title="Logout">
+              🔓 Logout
+            </button>
+          </span>
+        )}
       </div>
     </header>
   );

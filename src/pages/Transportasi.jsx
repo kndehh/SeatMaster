@@ -1,17 +1,48 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Transportasi({  })
-{
-  const [activeTicket, setActiveTicket] = useState(null);
-  const [loggedIn, setLoggedIn] = useState(false); // bisa ubah sesuai autentikasi
+export default function Transportasi({
+  loggedIn: parentLoggedIn,
+  activeTicket: parentActiveTicket,
+  onTicketClick,
+}) {
+  const [activeTicket, setActiveTicket] = useState(parentActiveTicket ?? null);
+  const [loggedIn, setLoggedIn] = useState(parentLoggedIn ?? false);
+  const [userId, setUserId] = useState("User");
+  const navigate = useNavigate();
 
-  const handleTicketClick = (idx) => {
-    if (loggedIn) {
-      setActiveTicket(idx);
-    } else {
-      alert("Silakan login untuk membuka tiket ini.");
+  useEffect(() => {
+    if (parentLoggedIn !== undefined) setLoggedIn(parentLoggedIn);
+    if (parentActiveTicket !== undefined) setActiveTicket(parentActiveTicket);
+  }, [parentLoggedIn, parentActiveTicket]);
+
+  useEffect(() => {
+    if (parentLoggedIn === undefined) {
+      const storedUser = localStorage.getItem("loggedInUser");
+      if (storedUser) {
+        setLoggedIn(true);
+        setUserId(storedUser);
+      } else {
+        setLoggedIn(false);
+        setUserId("User");
+      }
     }
-  };
+  }, [parentLoggedIn]);
+
+  function handleTicketClick(idx) {
+    if (onTicketClick) {
+      onTicketClick(idx);
+    } else {
+      if (!loggedIn) {
+        alert("Please login first to access ticket purchasing.");
+        navigate("/login");
+      } else {
+        setActiveTicket(idx);
+        alert("Relocating to Dummy Fastest Route.");
+        navigate("FastestRoute");
+      }
+    }
+  }
 
   return (
     <div>
@@ -40,8 +71,9 @@ export default function Transportasi({  })
               <div
                 key={ticket.title}
                 className={
-                  "ticket-card locked-content" +
+                  "ticket-card" +
                   (activeTicket === idx ? " active-ticket" : "") +
+                  (!loggedIn ? " locked-content" : "") +
                   (loggedIn ? " unlocked" : "")
                 }
                 onClick={() => handleTicketClick(idx)}
@@ -51,10 +83,13 @@ export default function Transportasi({  })
                   <h3>{ticket.title}</h3>
                   <img src={ticket.img} alt={ticket.title.toLowerCase()} />
                 </div>
-                <div className="lock-overlay">
-                  <div className="lock-icon">🔒</div>
-                  <div className="lock-text">Content Locked</div>
-                </div>
+                {/* Lock overlay hanya muncul jika belum login */}
+                {!loggedIn && (
+                  <div className="lock-overlay">
+                    <div className="lock-icon">🔒</div>
+                    <div className="lock-text">Content Locked</div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

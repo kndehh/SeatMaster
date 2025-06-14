@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import "./components/pageLRT.css";
 import Header from "./pages/Header.jsx";
 import Transportasi from "./pages/Transportasi.jsx";
-import {Link} from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const stationStartOptions = [
   "Stasiun",
-  "Lebak Bulus",
-  "Fatmawati",
-  "Cipete Raya",
-  "Haji Nawi",
-  "Blok A",
-  "Blok M",
+  "Kelapa Gading",
+  "Boulevard Utara",
+  "Boulevard Selatan",
+  "Pegangsaan Dua",
+  "Pulomas",
+  "Velodrome",
 ];
 
 const stationEndOptions = [
@@ -24,46 +24,61 @@ const stationEndOptions = [
   "Velodrome",
 ];
 
-const transportList = [
-  {
-    key: "MRT",
-    icon: <img src="/public/assets/mrt.png" alt="mrt" />,
-    label: "MRT",
-  },
-  { key: "LRT", icon: "🚊", label: "LRT" },
-  { key: "KRL", icon: "🚂", label: "KRL" },
-  { key: "TransJakarta", icon: "🚌", label: "Trans Jakarta" },
-];
-
 export default function PageLRT() {
   const [start, setStart] = useState("Stasiun");
   const [end, setEnd] = useState("Stasiun");
-  const [activeTransport, setActiveTransport] = useState(null);
 
   // Status login dan tiket
   const [loggedIn, setLoggedIn] = useState(false);
   const [activeTicket, setActiveTicket] = useState(null);
+  const [userId, setUserId] = useState("User"); // tambahkan ini
 
+  const navigate = useNavigate();
+
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleTransportasiClick = () => {
+    navigate("/"); // balik ke page awal/home
+  };
+
+  const handleRouteClick = () => {
+    navigate("/#route"); // balik ke section route di home
+  };
+
+  const handleCapacityClick = () => {
+    scrollToSection("fastest-route-section"); // scroll ke section fastest route di page ini
+  };
+
+  const handleBuyTicketClick = () => {
+    scrollToSection("buy-ticket-section"); // scroll ke bawah (section buy ticket)
+  };
   useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
-    setLoggedIn(!!storedUser);
+    if (storedUser) {
+      setLoggedIn(true);
+      setUserId(storedUser);
+    } else {
+      setLoggedIn(false);
+      setUserId("User");
+    }
   }, []);
 
   const handleTicketClick = (idx) => {
     if (!loggedIn) {
       alert("Please login first to access ticket purchasing.");
-      window.location.href = "/login";
+      navigate("/login");
     } else {
       setActiveTicket(idx);
-      alert(
-        "This content is locked. Please upgrade your account to access this feature."
-      );
+      alert("Connecting to purchasing tickets");
+      navigate("/FastestRoute"); // tambahkan ini agar bisa navigate
     }
   };
-
   // Handler dummy agar tidak error
   const handleContact = () => {
-    alert("Contact feature coming soon!");
+    alert("Connecting to customer services");
   };
 
   const handleGo = () => {
@@ -76,17 +91,34 @@ export default function PageLRT() {
       return;
     }
     alert(`Rute tercepat dari ${start} ke ${end} akan ditampilkan (dummy).`);
+    navigate("/FastestRoute");
   };
+
+  function logout() {
+    setLoggedIn(false);
+    setUserId("User");
+    setActiveTicket(null);
+    localStorage.removeItem("loggedInUser");
+    alert("Logged out successfully.");
+  }
 
   return (
     <div>
       <div>
-        <Header />
+        <Header
+          onTransportasiClick={handleTransportasiClick}
+          onRouteClick={handleRouteClick}
+          onCapacityClick={handleCapacityClick}
+          onBuyTicketClick={handleBuyTicketClick}
+          loggedIn={loggedIn}
+          userId={userId}
+          onLogout={logout}
+        />{" "}
       </div>
 
       {/* Hero Section */}
       <section className="hero">
-        <h1>Connecting All your transportation</h1>
+        <h1 className="h1LRT">Connecting All your transportation</h1>
         <div className="weather-info">
           Recent Weather at Lebak Bulus : <span className="sun-icon">☀</span>{" "}
           Sunny, 32°C (15:21, Sunday, 15 March 2025)
@@ -98,18 +130,22 @@ export default function PageLRT() {
       </section>
 
       <main className="main-content">
-        <div className="route-selector">
+        <div className="route-selector-lrt">
           <div className="help-section">
             <h3>Need Help?</h3>
-            <button className="contact-btn" onClick={handleContact}>
+            <Link
+              to="/customer-service"
+              className="contact-btn"
+              onClick={handleContact}
+            >
               <span role="img" aria-label="chat">
                 💬
               </span>{" "}
               Contact Us!
-            </button>
+            </Link>
           </div>
 
-          <div className="fastest-route">
+          <div className="fastest-route" id="fastest-route-section">
             <h2>Fastest Route</h2>
 
             <div className="station-input">
@@ -141,22 +177,20 @@ export default function PageLRT() {
                 ))}
               </select>
             </div>
-            <Link to="/FastestRoute" className="go-btn" onClick={handleGo}>
+            <button className="go-btn" onClick={handleGo}>
               GO!
-            </Link>
+            </button>
           </div>
         </div>
 
         <div className="train-illustration">
           <div className="train-container">
             <div className="train">
-              <div className="train-window"></div>
-              <div className="train-door"></div>
-              <div className="train-lights">
-                <div className="light red"></div>
-                <div className="light green"></div>
-                <div className="light blue"></div>
-              </div>
+              <img
+                src="../public/assets/lrt.png"
+                alt="lrt"
+                className="posisiLRT"
+              />
             </div>
             <div className="train-front"></div>
           </div>
@@ -164,7 +198,7 @@ export default function PageLRT() {
       </main>
 
       {/* Transportation Grid */}
-      <div>
+      <div className="lrtFooter" id="buy-ticket-section">
         <Transportasi
           loggedIn={loggedIn}
           activeTicket={activeTicket}
@@ -172,13 +206,13 @@ export default function PageLRT() {
         />
       </div>
 
-      {/* Footer */}
-      <footer className="footer">
-        <p>Connecting All Your Transportation</p>
-        <button className="footer-contact" onClick={handleContact}>
-          💬
-        </button>
-      </footer>
+      {/*/!* Footer *!/*/}
+      {/*<footer className="footer">*/}
+      {/*  <p>Connecting All Your Transportation</p>*/}
+      {/*  <button className="footer-contact" onClick={handleContact}>*/}
+      {/*    💬*/}
+      {/*  </button>*/}
+      {/*</footer>*/}
     </div>
   );
 }

@@ -1,87 +1,123 @@
 /* Header Navigation */
-.header {
+.allHeader {
   background: white;
-  /*padding: 16px 0;*/
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
 
-  .nav-container {
-    max-width: 100vh;
-    margin: 32px auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 32px;
-  }
+.nav-container {
+  max-width: 100vh;
+  margin: 32px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 32px;
+}
 
-  .logo {
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-    border: 1px #1c1c1c solid;
-    border-radius: 34px;
-    backdrop-filter: blur(4px) !important;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    padding: 10.5px 24px;
-    /* margin-left: -160px; */
-    margin-right: 40px;
-  }
+.logo {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-decoration: none;
+  border: 1px #1c1c1c solid;
+  border-radius: 34px;
+  backdrop-filter: blur(4px) !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 10.5px 24px;
+  margin-right: 40px;
+}
 
-  .nav-menu {
-    font-size: 24px;
-    display: flex;
-    list-style: none;
-    gap: 32px;
-    padding: 10.5px 32.5px;
-    border-radius: 34px;
-    border: 1px #1c1c1c solid;
-    backdrop-filter: blur(100px);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  }
+.navbar {
+  display: flex;
+}
 
-  .nav-menu a {
-    color: white !important;
-    text-decoration: none;
-    transition: color 0.3s;
-  }
+.nav-menu {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 16px;
+}
 
-  .nav-menu a:hover {
-    color: dimgrey !important;
-  }
+.nav-menu li {
+  display: flex;
+  align-items: center;
+}
 
-  .nav-menu a:visited {
-    color: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-  }
+/* Style for both nav-btn (button) and anchor */
+.nav-btn,
+.nav-menu a {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.08);
+  display: inline-block;
+  text-decoration: none;
+}
 
-  .login-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 10.5px 32.5px;
-    border-radius: 34px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 24px;
-    transition: transform 0.3s;
-    margin-right: -120px;
-    display: block;
-  }
+.nav-btn:hover,
+.nav-menu a:hover {
+  background: linear-gradient(135deg, #667eea 0%, #5f5fc4 100%);
+  transform: translateY(-2px) scale(1.04);
+  color: #fff;
+  text-decoration: none;
+}
 
-  .login-btn:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%);
-  }
+.nav-menu a:visited {
+  color: #fff !important;
+}
 
-  /*.hamburger {*/
-  /*  display: none;*/
-  /*  flex-direction: column;*/
-  /*  cursor: pointer;*/
-  /*}*/
+.loginBtn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 10.5px 32.5px;
+  border-radius: 34px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 24px;
+  transition: transform 0.3s;
+  border: none;
+  cursor: pointer;
+  display: block;
+}
 
-  /*.hamburger span {*/
-  /*  width: 25px;*/
-  /*  height: 3px;*/
-  /*  background: white;*/
-  /*  margin: 3px 0;*/
-  /*  transition: 0.3s;*/
-  /*}*/
+.loginBtn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-id {
+  color: #333;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.logoutBtn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  transition: transform 0.3s, background 0.2s;
+}
+
+.logoutBtn:hover {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, #667eea 0%, #5f5fc4 100%);
 }

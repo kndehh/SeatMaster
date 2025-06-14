@@ -1,16 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "./pages/Header.jsx";
+import Transport from "./pages/Transportasi.jsx";
 import "./components/landing.css";
-import "../public/assets/lrt.png"
+import "../public/assets/lrt.png";
 
 export default function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userId, setUserId] = useState("User");
   const [activeTicket, setActiveTicket] = useState(null);
-  const navigate = useNavigate();
+  const [modalMap, setModalMap] = useState(null);
 
-    useEffect(() => {
+  const handleContact = () => {
+    alert("Connecting to customer services");
+  };
+
+  const routeMaps = [
+    {
+      label: "MRT",
+      imgThumb: "/public/assets/minimap mrt.png", // gambar kecil di card
+      imgFull: "/public/assets/full mrt.png", // gambar besar di modal
+    },
+    {
+      label: "LRT",
+      imgThumb: "/public/assets/minimap lrt.png",
+      imgFull: "/public/assets/full lrt.png",
+    },
+    {
+      label: "KRL",
+      imgThumb: "/public/assets/minimap krl.png",
+      imgFull: "/public/assets/full krl.png",
+    },
+    {
+      label: "Trans Jakarta",
+      imgThumb: "/public/assets/minimap tije.png",
+      imgFull: "/public/assets/integrasi (1).jpg",
+    },
+  ];
+
+  useEffect(() => {
     const storedUser = localStorage.getItem("loggedInUser");
     if (storedUser) {
       setLoggedIn(true);
@@ -22,18 +50,7 @@ export default function Home() {
   }, []);
 
   // Dummy login prompt
-  function handleLogin() {
-    const uname = prompt("Enter username:");
-    const pwd = prompt("Enter password:");
-    if (uname && pwd) {
-      setLoggedIn(true);
-      setUserId(uname);
-      localStorage.setItem("loggedInUser", uname);
-      alert("Login successful! Ticket section is now unlocked.");
-    } else {
-      alert("Please enter both username and password.");
-    }
-  }
+
 
   function logout() {
     setLoggedIn(false);
@@ -41,18 +58,6 @@ export default function Home() {
     setActiveTicket(null);
     localStorage.removeItem("loggedInUser");
     alert("Logged out successfully. Ticket section is now locked.");
-  }
-
-  function handleTicketClick(idx) {
-    if (!loggedIn) {
-      alert("Please login first to access ticket purchasing.");
-      navigate("/login");
-    } else {
-      setActiveTicket(idx);
-      alert(
-        "This content is locked. Please upgrade your account to access this feature."
-      );
-    }
   }
 
   // Hamburger menu toggle (for mobile)
@@ -102,23 +107,8 @@ export default function Home() {
 
   return (
     <div>
-      {/* Login Status */}
-      {loggedIn && (
-        <div className="login-status" id="loginStatus">
-          <span>
-            Logged in as: <strong id="username">{userId}</strong>
-          </span>
-          <button className="logout-btn" onClick={logout}>
-            Logout
-          </button>
-        </div>
-      )}
-
       {/* Header */}
-      <div>
-        <Header />
-      </div>
-
+      <Header loggedIn={loggedIn} userId={userId} onLogout={logout} />
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-content">
@@ -131,7 +121,6 @@ export default function Home() {
           <p className="tagline">Connecting All Your Transportation</p>
         </div>
       </section>
-
       {/* Weather Section */}
       <section className="weather-section">
         <div className="weather-info">
@@ -141,7 +130,6 @@ export default function Home() {
           </p>
         </div>
       </section>
-
       {/* Transportasi Section */}
       <section className="transportasi" id="transportasi">
         <div className="section-content">
@@ -156,10 +144,7 @@ export default function Home() {
               </div>
             </div>
             <div className="transport-card">
-              <Link
-                to="/lrt"
-                // style={{ textDecoration: "none", color: "inherit" }}
-              >
+              <Link to="/lrt">
                 <div className="card-image lrt">
                   <img src="/public/assets/lrt.png" alt="lrt" />
                 </div>
@@ -188,98 +173,75 @@ export default function Home() {
         </div>
         <p className="connecting-text">Connecting All Your Transportation</p>
       </section>
-
       {/* Help Button */}
-      <div className="help-section">
-        <Link to="/customer-service" className="help-btn">
-          Need Help?
-          <img src="/public/assets/customer services.png" alt="customer services" />
-        </Link>
+      <div className="route-selector">
+        <div className="help-section">
+          <h3>Need Help?</h3>
+          <Link
+            to="/customer-service"
+            className="contact-btn"
+            onClick={handleContact}
+          >
+            <span role="img" aria-label="chat">
+              💬
+            </span>{" "}
+            Contact Us!
+          </Link>
+        </div>
       </div>
-
       {/* Route Section */}
       <section className="route-section" id="route">
         <div className="section-content">
           <h2 className="route-title">Route</h2>
           <div className="route-maps">
-            <div className="route-map">
-              <div className="map-image">
-                <div className="map-lines"></div>
-                <img src="/public/assets/minimap%20mrt.png" alt="mrt map" />
-              </div>
-              <div className="map-label">MRT</div>
-            </div>
-            <div className="route-map">
-              <div className="map-image">
-                <div className="map-lines"></div>
-                <img src="/public/assets/minimap%20lrt.png" alt="lrt map" />
-              </div>
-              <div className="map-label">LRT</div>
-            </div>
-            <div className="route-map">
-              <div className="map-image">
-                <div className="map-lines"></div>
-                <img src="/public/assets/minimap%20krl.png" alt="krl map" />
-              </div>
-              <div className="map-label">KRL</div>
-            </div>
-            <div className="route-map">
-              <div className="map-image">
-                <div className="map-lines"></div>
-                <img src="/public/assets/minimap%20tije.png" alt="trans jakarta map" />
-              </div>
-              <div className="map-label">Trans Jakarta</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Buy Ticket Section */}
-      <section className="ticket-section" id="ticket">
-        <div className="section-content">
-          <h2 className="ticket-title">Buy Ticket</h2>
-          <div className="ticket-options">
-            {[
-              {
-                title: "MRT Ticket",
-                img: "/assets/bticketMRT.png",
-              },
-              {
-                title: "LRT Ticket",
-                img: "/assets/bticketLRT.png",
-              },
-              {
-                title: "KRL Ticket",
-                img: "/assets/bticketKRL.png", // sudah benar, tanpa spasi
-              },
-              {
-                title: "Trans Jakarta Ticket",
-                img: "/assets/bticketTiJe.png",
-              },
-            ].map((ticket, idx) => (
+            {routeMaps.map((route) => (
               <div
-                key={ticket.title}
-                className={
-                  "ticket-card locked-content" +
-                  (activeTicket === idx ? " active-ticket" : "") +
-                  (loggedIn ? " unlocked" : "")
-                }
-                onClick={() => handleTicketClick(idx)}
+                className="route-map"
+                key={route.label}
+                onClick={() => setModalMap(route.imgFull)}
                 style={{ cursor: "pointer" }}
               >
-                <div>
-                  <h3>{ticket.title}</h3>
-                  <img src={ticket.img} alt={ticket.title.toLowerCase()} />
+                <div className="map-image">
+                  <img src={route.imgThumb} alt={route.label + " map"} />
                 </div>
-                <div className="lock-overlay">
-                  <div className="lock-icon">🔒</div>
-                  <div className="lock-text">Content Locked</div>
-                </div>
+                <div className="map-label">{route.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
+      {modalMap && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+          }}
+          onClick={() => setModalMap(null)}
+        >
+          <img
+            src={modalMap}
+            alt="Full Map"
+            style={{
+              maxWidth: "90vw",
+              maxHeight: "90vh",
+              borderRadius: 16,
+              boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+              background: "#fff",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      )}
+      {/* Buy Ticket Section */}
+      <Transport />
     </div>
   );
 }

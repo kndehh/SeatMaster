@@ -1,20 +1,24 @@
-/*{*/
-/*  margin: 0;*/
-/*  padding: 0;*/
-/*  box-sizing: border-box;*/
-/*  font-family: Poppins, sans-serif;*/
-/*}*/
+/* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Poppins, sans-serif;
+  width: 100% !important;
+  height: 100% !important;
+} */
 
 body {
   font-family: Poppins, sans-serif;
-    /*overflow: hidden;*/
- }
+  width: 100% !important;
+  height: 100% !important;
+  /*overflow: scroll;*/
+}
 
 /* Header Navigation */
 .allHeader {
   background: white;
-  width: 100vw !important;
-  height: 14vh !important;
+  width: 100% !important;
+  height: 100% !important;
   padding: 15px 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -27,15 +31,15 @@ body {
   }
 
   .logo {
-      color: white;
-      font-size: 24px;
-      font-weight: 500;
-      text-decoration: none;
-      border: 1px #ffffff80 solid;
-      border-radius: 34px;
-      backdrop-filter: blur(4px) !important;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 10.5px 24px;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px #ffffff80 solid;
+    border-radius: 34px;
+    backdrop-filter: blur(4px) !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 10.5px 24px;
   }
   .logo:hover {
     color: #ffffff80;
@@ -81,6 +85,9 @@ body {
   }
 
   .loginBtn {
+    font-family: Poppins, sans-serif;
+    border: 1px #ffffff80 solid;
+
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 10.5px 32.5px;
@@ -104,31 +111,63 @@ body {
     color: white;
     font-size: 18px;
   }
+
+  .logoutBtn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 16px;
+    transition: background 0.3s;
+    font-size: 18px;
+  }
+  .logoutBtn:hover {
+    background: #c0392b;
+  }
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 10.5px 32.5px;
+    border-radius: 34px;
+    border: #ffffff80 solid 1px;
+    backdrop-filter: blur(4px) !important;
+  }
+  .user-id {
+    font-weight: bold;
+    font-size: 18px;
+    color: white;
+  }
 }
 
 /* ====== HERO SECTION ====== */
 /* Hero Section */
 .hero {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important;
-  max-width: 100vw;
+  width: 100% !important;
+  height: 100% !important;
   /*padding: 64px 0;*/
   /*text-align: center;*/
 
   .hero-content {
     text-align: center;
-    width: 100vw;
+    width: 100%;
     display: block;
     margin-top: 12px;
-    margin-left: -160px;
+    margin-left: -80px;
     /*margin: 0 auto;*/
     /*padding: 0 32px;*/
   }
 
   .hero h1 {
-    font-size: 40px;
-    margin-bottom: 32px;
+    font-size: 60px;
     color: #1c1c1c !important;
-    font-weight: bold;
+    margin-bottom: 52px;
+    font-weight: 700;
     display: block;
   }
 
@@ -161,24 +200,24 @@ body {
   .tagline {
     margin-top: 48px;
     margin-bottom: -36px;
-    color: #1c1c1c;
+    color: #666666 !important;
     font-size: 24px;
     text-align: center;
+    font-weight: bold;
   }
 }
 
 /* Weather Section */
 .weather-section {
   background: #ffffff80;
-  color: black !important;
+  color: #666;
   padding: 16px 0;
   color: white;
   text-align: center;
-
 }
 
 .weather-info {
-  max-width: 100vw;
+  width: 100%;
   margin: 0 auto;
   padding: 0 32px;
   margin-top: 16px;
@@ -188,14 +227,15 @@ body {
 /* Transportasi Section */
 .transportasi {
   padding: 64px 0;
-  width: 100vw;
+  /*width: 100% !important;*/
+  /*height: 100% !important;*/
 
   background: #ffffff80 !important;
 
   .section-content {
     width: 100vw;
     margin: 0 auto;
-    padding: 0 32px;
+    padding: 0 64px;
   }
 
   .section-title {
@@ -217,12 +257,13 @@ body {
   }
 
   .transport-card {
-    /*background: rgba(0, 0, 0, 0.8) !important;*/
+    background: rgba(0, 0, 0, 0.8) !important;
     border-radius: 15px;
     overflow: hidden;
     transition: transform 0.3s;
     width: 299px;
     height: 475px;
+    list-style: none;
   }
 
   .transport-card:hover {
@@ -251,7 +292,8 @@ body {
     object-fit: contain;
   }
   .card-image.mrt {
-    background: linear-gradient(360deg, #f5f7fa 0%, #c3cfe2 100%), url("../../public/assets/mrt.png");
+    background: linear-gradient(360deg, #f5f7fa 0%, #c3cfe2 100%),
+      url("../../public/assets/mrt.png");
   }
 
   .card-image.lrt {
@@ -316,7 +358,10 @@ body {
 /* Route Section */
 .route-section {
   padding: 64px 0;
+  width: 100% !important;
+  height: 100% !important;
   /*background: #f0e6d2;*/
+
   .route-title {
     font-size: 64px;
     font-weight: bold;
@@ -401,6 +446,13 @@ body {
     width: 1680px;
     margin: 0 auto;
     padding: 32px 32px;
+    /* font-size: 18px; */
+  }
+  .ticket-options h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 16px;
   }
 
   .ticket-card {
@@ -455,7 +507,6 @@ body {
     backdrop-filter: none;
   }
 }
-/* ...existing code... */
 
 .lock-icon {
   font-size: 32px;
@@ -494,9 +545,8 @@ body {
   background: #c0392b;
 }
 
-
 /* ====== RESPONSIVE ====== */
-@media (max-width: 900px) {
+/* @media (max-width: 900px) {
   .header .nav-container {
     flex-direction: column;
     align-items: stretch;
@@ -528,7 +578,8 @@ body {
     font-size: 16px;
     padding: 8px 12px;
   }
-  .main-section, .centered-container {
+  .main-section,
+  .centered-container {
     padding-left: 8px;
     padding-right: 8px;
   }
@@ -562,7 +613,8 @@ body {
     font-size: 12px;
     padding: 6px 8px;
   }
-  .main-section, .centered-container {
+  .main-section,
+  .centered-container {
     padding-left: 2px;
     padding-right: 2px;
   }
@@ -575,11 +627,142 @@ body {
     min-width: 0;
     padding: 8px 0 6px 0;
   }
+} */
+
+
+/* --- Responsive untuk SEMUA halaman utama --- */
+@media (max-width: 900px) {
+  .main-content,
+  .route-section,
+  .transportasi,
+  .ticket-section,
+  .fastest-route,
+  .login-container,
+  .register-container,
+  .customer-service-section {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    min-width: 0 !important;
+    padding: 24px 2vw !important;
+    gap: 24px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  .route-selector-lrt,
+  .route-selector,
+  .route-maps,
+  .transport-grid,
+  .ticket-form,
+  .customer-form {
+    padding: 18px 2vw !important;
+    min-width: 0 !important;
+    max-width: 100vw !important;
+    border-radius: 14px !important;
+  }
+  .train-illustration,
+  .train-container,
+  .transportVehicle,
+  .map-image {
+    width: 100vw !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    height: auto !important;
+  }
+  .train-container,
+  .transportVehicle img,
+  .map-image img {
+    width: 90vw !important;
+    max-width: 300px !important;
+    height: auto !important;
+  }
+  .hero,
+  .login-hero,
+  .register-hero {
+    padding: 24px 0 0 0 !important;
+    padding-left: 0 !important;
+    text-align: center !important;
+  }
+  .h1LRT,
+  .hero h1,
+  .login-title,
+  .register-title {
+    font-size: 32px !important;
+    margin-left: 0 !important;
+    text-align: center !important;
+  }
+  .lrt-title,
+  .section-title,
+  .route-title {
+    font-size: 32px !important;
+    margin-top: 16px !important;
+    margin-left: 0 !important;
+    text-align: center !important;
+  }
+  .paragraph p,
+  .tagline,
+  .login-desc,
+  .register-desc {
+    margin-top: 18px !important;
+    font-size: 16px !important;
+    text-align: center !important;
+  }
+  .weather-info {
+    font-size: 16px !important;
+    margin-bottom: 16px !important;
+    text-align: center !important;
+  }
 }
 
+@media (max-width: 500px) {
+  .main-content,
+  .route-section,
+  .transportasi,
+  .ticket-section,
+  .fastest-route,
+  .login-container,
+  .register-container,
+  .customer-service-section {
+    padding: 8px 1vw !important;
+    gap: 10px !important;
+  }
+  .route-selector-lrt,
+  .route-selector,
+  .route-maps,
+  .transport-grid,
+  .ticket-form,
+  .customer-form {
+    padding: 8px 1vw !important;
+    border-radius: 8px !important;
+  }
+  .train-container,
+  .transportVehicle img,
+  .map-image img {
+    width: 98vw !important;
+    max-width: 160px !important;
+    height: 70px !important;
+  }
+  .hero h1,
+  .h1LRT,
+  .lrt-title,
+  .section-title,
+  .route-title,
+  .login-title,
+  .register-title {
+    font-size: 18px !important;
+  }
+  .paragraph p,
+  .tagline,
+  .login-desc,
+  .register-desc {
+    font-size: 12px !important;
+  }
+  .weather-info {
+    font-size: 12px !important;
+  }
+}
 /* ====== UTILITY ====== */
 .text-center {
   text-align: center;
 }
-
-
