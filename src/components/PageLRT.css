@@ -202,11 +202,14 @@ body {
   height: 200px;
   position: relative;
   animation: float 3s ease-in-out infinite;
+
 }
 .posisiLRT {
   position: absolute;
   margin-top: -170px;
   margin-left: -120px;
+  transform: scaleX(-1);
+
 }
 
 @keyframes float {

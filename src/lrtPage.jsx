@@ -3,26 +3,7 @@ import "./components/pageLRT.css";
 import Header from "./pages/Header.jsx";
 import Transportasi from "./pages/Transportasi.jsx";
 import { Link, useNavigate } from "react-router-dom";
-
-const stationStartOptions = [
-  "Stasiun",
-  "Kelapa Gading",
-  "Boulevard Utara",
-  "Boulevard Selatan",
-  "Pegangsaan Dua",
-  "Pulomas",
-  "Velodrome",
-];
-
-const stationEndOptions = [
-  "Stasiun",
-  "Kelapa Gading",
-  "Boulevard Utara",
-  "Boulevard Selatan",
-  "Pegangsaan Dua",
-  "Pulomas",
-  "Velodrome",
-];
+import {lrtStations} from "./pages/StasiunLRT.js";
 
 export default function PageLRT() {
   const [start, setStart] = useState("Stasiun");
@@ -102,6 +83,20 @@ export default function PageLRT() {
     alert("Logged out successfully.");
   }
 
+  // When buying a ticket, update the used capacity:
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      const newUsed = Math.min(capacity.used + 1, capacity.total);
+      setCapacity((c) => ({ ...c, used: newUsed }));
+      setCapacity(form.startStation, form.endStation, newUsed); // update global store
+      setModal({ show: true, routeData: { ...routeInfo, paymentMethod: form.paymentMethod } });
+    }, 1500);
+  }
+
   return (
     <div>
       <div>
@@ -155,8 +150,8 @@ export default function PageLRT() {
                 value={start}
                 onChange={(e) => setStart(e.target.value)}
               >
-                {stationStartOptions.map((opt) => (
-                  <option key={opt} value={opt}>
+                {lrtStations.map((opt,index) => (
+                  <option key={opt} value={opt} disabled={index === 0 || opt === end}>
                     {opt}
                   </option>
                 ))}
@@ -170,8 +165,8 @@ export default function PageLRT() {
                 value={end}
                 onChange={(e) => setEnd(e.target.value)}
               >
-                {stationEndOptions.map((opt) => (
-                  <option key={opt} value={opt}>
+                {lrtStations.map((opt,index) => (
+                  <option key={opt} value={opt} disabled={index === 0 || opt === start}>
                     {opt}
                   </option>
                 ))}

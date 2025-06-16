@@ -1,4 +1,6 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
+
 
 const stations = {
   jakarta: "Jakarta Pusat",
@@ -51,25 +53,25 @@ function getCurrentDateTime() {
 }
 
 export default function Payment() {
+const navigate = useNavigate();
   // Simulasi data dari query string atau default
   const params = getUrlParams();
   const { date, time } = getCurrentDateTime();
 
   function handleCheckTicket() {
-    alert("Fitur cek tiket akan diarahkan ke halaman verifikasi tiket");
+    alert("Fitur Cek Tiket belum tersedia. Silahkan cek email anda untuk melihat tiket anda.");
   }
 
   function handleBack() {
     if (window.confirm("Kembali ke halaman pemesanan?")) {
-      window.history.back();
+      navigate("/");
     }
   }
 
   return (
     <>
       <style>{`
-        * {margin:0;padding:0;box-sizing:border-box;}
-        body, .payment-bg {font-family:'Arial',sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;padding:20px;}
+        .payment-bg {font-family:'Arial',sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%); min-height:100%; width:100vw; display:flex;justify-content:center;align-items:center;position:relative;padding:32px;overflow:hidden;}
         .bg-decoration {position:absolute;width:150px;height:150px;border:2px solid #6366f1;border-radius:15px;opacity:0.08;transform:rotate(45deg);}
         .bg-decoration:nth-child(1) {top:-75px;left:-75px;animation:float 8s ease-in-out infinite;}
         .bg-decoration:nth-child(2) {bottom:-75px;right:-75px;animation:float 8s ease-in-out infinite reverse;}

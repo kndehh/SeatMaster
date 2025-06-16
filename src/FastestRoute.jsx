@@ -1,48 +1,76 @@
-import React, { useState } from 'react';
-import { ChevronDown, ArrowRight, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import './components/fastestRoute.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { lrtStations } from "./pages/StasiunLRT.js";
+import { getCapacity } from "./pages/CapacityStorage.js";
 
-const TrainBooking = () => {
-  const [startStation, setStartStation] = useState('Stasiun');
-  const [endStation, setEndStation] = useState('Stasiun');
+// Build station key map
+const lrtStationsMap = {};
+lrtStations.forEach((station, index) => {
+  if (index > 0) {
+    const key = `lrt_${station.toLowerCase().replace(/\s+/g, '_')}`;
+    lrtStationsMap[key] = station;
+  }
+});
+const stationKeys = Object.keys(lrtStationsMap);
+
+export default function TrainBooking() {
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
   const [showStartDropdown, setShowStartDropdown] = useState(false);
   const [showEndDropdown, setShowEndDropdown] = useState(false);
+  const [capacity, setCapacity] = useState({ used: 0, total: 100 });
+  const navigate = useNavigate();
 
-  const stations = [
-    'Stasiun Gambir', 'Stasiun Pasar Senen', 'Stasiun Tanah Abang', 
-    'Stasiun Manggarai', 'Stasiun Cikini', 'Stasiun Gondangdia',
-    'Stasiun Juanda', 'Stasiun Sawah Besar', 'Stasiun Kemayoran',
-    'Stasiun Rajawali', 'Stasiun Kampung Bandan', 'Stasiun Ancol'
-  ];
+  useEffect(() => {
+    if (!start || !end || start === end) {
+      setCapacity({ used: 0, total: 100 });
+      return;
+    }
+    setCapacity(getCapacity(start, end));
+  }, [start, end]);
+
+  const btnTicket = () => {
+    if (!start || !end) {
+      alert("Pilih stasiun awal dan tujuan terlebih dahulu.");
+      return;
+    }
+    if (start === end) {
+      alert("Stasiun awal dan tujuan tidak boleh sama.");
+      return;
+    }
+    alert(`Rute tercepat dari ${lrtStationsMap[start]} ke ${lrtStationsMap[end]} akan ditampilkan (dummy).`);
+    navigate("/buy-ticket", { state: { startStation: start, endStation: end } });
+  };
 
   return (
     <div className="app-container">
-      {/* Main Content */}
       <div className="main-container">
-        {/* Title */}
+        <div className="help-section">
+          <h3>Need Help?</h3>
+          <Link
+            to="/customer-service"
+            className="contact-btn"
+            onClick={() => alert("Connecting to customer services")}
+          >
+            <span role="img" aria-label="chat">💬</span> Contact Us!
+          </Link>
+        </div>
         <h1 className="main-title">Fastest Route</h1>
-
         <div className="content-grid">
-          {/* Left Side - Train Image */}
           <div className="train-section">
             <div className="train-container">
-              <img src="../public/assets/LRTFastest.png" alt="lrt"/>
+              <img src="../public/assets/lrt.png" alt="lrt" />
             </div>
           </div>
-
-          {/* Right Side - Station Selectors and Map */}
           <div className="form-section">
-            {/* Station Selectors */}
             <div className="station-controls">
-              {/* Start and End Labels */}
               <div className="station-labels">
                 <span>Start</span>
-                <span>End</span>
+                <span className="endingStation">End</span>
               </div>
-
-              {/* Station Dropdowns */}
               <div className="station-dropdowns">
-                {/* Start Station */}
                 <div className="dropdown-container">
                   <button
                     onClick={() => {
@@ -51,34 +79,28 @@ const TrainBooking = () => {
                     }}
                     className="station-dropdown"
                   >
-                    <span className="station-text">{startStation}</span>
+                    <span className="station-text">{start ? lrtStationsMap[start] : "Stasiun"}</span>
                     <ChevronDown className="dropdown-icon" />
                   </button>
-                  
                   {showStartDropdown && (
                     <div className="dropdown-menu">
-                      {stations.map((station, index) => (
+                      {stationKeys.map((key) => (
                         <button
-                          key={index}
+                          key={key}
+                          className="dropdown-item"
+                          disabled={key === end}
                           onClick={() => {
-                            setStartStation(station);
+                            setStart(key);
                             setShowStartDropdown(false);
                           }}
-                          className="dropdown-item"
                         >
-                          {station}
+                          {lrtStationsMap[key]}
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
-
-                {/* Arrow */}
-                
                 <ArrowRight className="arrow-icon" />
-                
-
-                {/* End Station */}
                 <div className="dropdown-container">
                   <button
                     onClick={() => {
@@ -87,22 +109,22 @@ const TrainBooking = () => {
                     }}
                     className="station-dropdown"
                   >
-                    <span className="station-text">{endStation}</span>
+                    <span className="station-text">{end ? lrtStationsMap[end] : "Stasiun"}</span>
                     <ChevronDown className="dropdown-icon" />
                   </button>
-                  
                   {showEndDropdown && (
                     <div className="dropdown-menu">
-                      {stations.map((station, index) => (
+                      {stationKeys.map((key) => (
                         <button
-                          key={index}
+                          key={key}
+                          className="dropdown-item"
+                          disabled={key === start}
                           onClick={() => {
-                            setEndStation(station);
+                            setEnd(key);
                             setShowEndDropdown(false);
                           }}
-                          className="dropdown-item"
                         >
-                          {station}
+                          {lrtStationsMap[key]}
                         </button>
                       ))}
                     </div>
@@ -110,8 +132,6 @@ const TrainBooking = () => {
                 </div>
               </div>
             </div>
-
-            {/* Map */}
             <div className="map-container">
               <div className="map-image">
                 <img src="../public/assets/map.png" alt="map" />
@@ -119,20 +139,15 @@ const TrainBooking = () => {
             </div>
           </div>
         </div>
-
-        {/* Capacity and Buy Button */}
         <div className="bottom-section">
           <div className="capacity-info">
-            Available Capacity: <span className="capacity-available">40</span>/<span className="capacity-total">100</span>
+            Available Capacity: <span className="capacity-available">{capacity.used}</span>/<span className="capacity-total">{capacity.total}</span>
           </div>
-          
-          <button className="buy-button">
+          <button className="buy-button" onClick={btnTicket}>
             BUY TICKET
           </button>
         </div>
       </div>
     </div>
   );
-};
-
-export default TrainBooking;
+}

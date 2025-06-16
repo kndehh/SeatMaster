@@ -1,6 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { lrtStations } from "./pages/StasiunLRT.js";
+import "./components/buyTicket.css";
+import { getCapacity, setCapacity as setGlobalCapacity } from "./pages/CapacityStorage.js";
+
+// Add LRT stations to the stations object
+const lrtStationsMap = {};
+lrtStations.forEach((station, index) => {
+  if (index > 0) { // Skip the first "Stasiun" placeholder
+    const key = `lrt_${station.toLowerCase().replace(/\s+/g, '_')}`;
+    lrtStationsMap[key] = station;
+  }
+});
 
 const stations = {
+  ...lrtStationsMap,
   jakarta: "Jakarta Pusat",
   bandung: "Bandung",
   surabaya: "Surabaya",
@@ -47,47 +61,48 @@ function formatPrice(price) {
 }
 
 export default function BuyTicket() {
+  const location = useLocation();
   const [form, setForm] = useState({
     startStation: "",
     endStation: "",
     paymentMethod: "",
   });
   const [routeInfo, setRouteInfo] = useState(null);
-  const [capacity, setCapacity] = useState({ used: 40, total: 100 });
+  const [capacity, setCapacity] = useState({ used: 0, total: 100 });
   const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({ show: false, routeData: null });
 
-  // Update route info and capacity when station changes
-  React.useEffect(() => {
-    const { startStation, endStation } = form;
-    if (
-      startStation &&
-      endStation &&
-      startStation !== endStation &&
-      stations[startStation] &&
-      stations[endStation]
-    ) {
-      const routeKey = getRouteKey(startStation, endStation);
-      const price = basePrices[routeKey] || 50000;
-      // Simulate different capacities for different routes
-      const capacities = [30, 40, 55, 70, 85];
-      const randomCapacity =
-        capacities[
-        (startStation.charCodeAt(0) +
-          endStation.charCodeAt(0) +
-          price) %
-        capacities.length
-          ];
-      setRouteInfo({
-        start: startStation,
-        end: endStation,
-        price,
-      });
-      setCapacity({ used: randomCapacity, total: 100 });
-    } else {
-      setRouteInfo(null);
-      setCapacity({ used: 40, total: 100 });
+  // Set form state from navigation (FastestRoute)
+  useEffect(() => {
+    if (location.state) {
+      const { startStation, endStation } = location.state;
+      if (startStation && endStation) {
+        setForm((prev) => ({
+          ...prev,
+          startStation,
+          endStation,
+        }));
+      }
     }
+    // eslint-disable-next-line
+  }, [location.state]);
+
+  // Always get capacity from shared store when stations change
+  useEffect(() => {
+    const { startStation, endStation } = form;
+    if (!startStation || !endStation || startStation === endStation) {
+      setRouteInfo(null);
+      setCapacity({ used: 0, total: 100 });
+      return;
+    }
+    const routeKey = getRouteKey(startStation, endStation);
+    const price = basePrices[routeKey] || 50000;
+    setRouteInfo({
+      start: startStation,
+      end: endStation,
+      price,
+    });
+    setCapacity(getCapacity(startStation, endStation));
     // eslint-disable-next-line
   }, [form.startStation, form.endStation]);
 
@@ -127,10 +142,9 @@ export default function BuyTicket() {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setCapacity((c) => ({
-        ...c,
-        used: Math.min(c.used + 1, c.total),
-      }));
+      const newUsed = Math.min(capacity.used + 1, capacity.total);
+      setCapacity((c) => ({ ...c, used: newUsed }));
+      setGlobalCapacity(form.startStation, form.endStation, newUsed); // update global store
       setModal({ show: true, routeData: { ...routeInfo, paymentMethod: form.paymentMethod } });
     }, 1500);
   }
@@ -143,7 +157,7 @@ export default function BuyTicket() {
         paymentMethod: "",
       });
       setRouteInfo(null);
-      setCapacity({ used: 40, total: 100 });
+      setCapacity({ used: 0, total: 100 });
     }
   }
 
@@ -155,7 +169,7 @@ export default function BuyTicket() {
       paymentMethod: "",
     });
     setRouteInfo(null);
-    setCapacity({ used: 40, total: 100 });
+    setCapacity({ used: 0, total: 100 });
   }
 
   // Capacity bar
@@ -169,56 +183,6 @@ export default function BuyTicket() {
 
   return (
     <>
-      <style>{`
-        * {margin:0;padding:0;box-sizing:border-box;}
-        body, .buyticket-bg {font-family:'Arial',sans-serif;background:linear-gradient(135deg,#f5f7fa 0%,#c3cfe2 100%);min-height:100vh;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;padding:20px;}
-        .bg-decoration {position:absolute;width:150px;height:150px;border:2px solid #6366f1;border-radius:15px;opacity:0.08;transform:rotate(45deg);}
-        .bg-decoration:nth-child(1) {top:-75px;left:-75px;animation:float 8s ease-in-out infinite;}
-        .bg-decoration:nth-child(2) {bottom:-75px;right:-75px;animation:float 8s ease-in-out infinite reverse;}
-        .bg-decoration:nth-child(3) {top:30%;right:-100px;animation:float 10s ease-in-out infinite;}
-        @keyframes float {0%,100%{transform:rotate(45deg) translateY(0px);}50%{transform:rotate(45deg) translateY(-15px);}}
-        .container {background:rgba(255,255,255,0.95);backdrop-filter:blur(15px);border-radius:25px;padding:40px;box-shadow:0 25px 50px rgba(0,0,0,0.1);border:1px solid rgba(255,255,255,0.3);width:100%;max-width:500px;position:relative;z-index:10;}
-        .title {font-size:2.5rem;font-weight:bold;text-align:center;margin-bottom:40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-transform:uppercase;letter-spacing:2px;}
-        .form-section {margin-bottom:30px;}
-        .form-row {display:flex;gap:20px;margin-bottom:25px;}
-        .form-group {flex:1;}
-        .form-group.full-width {width:100%;}
-        .form-group label {display:block;margin-bottom:8px;font-weight:600;color:#4a5568;text-transform:uppercase;font-size:0.9rem;letter-spacing:0.5px;}
-        .select-container {position:relative;}
-        .form-group select {width:100%;padding:15px 20px;border:2px solid #e2e8f0;border-radius:12px;font-size:1rem;background:#f8fafc;color:#4a5568;transition:all 0.3s ease;outline:none;appearance:none;cursor:pointer;}
-        .form-group select:focus {border-color:#6366f1;background:#fff;box-shadow:0 0 0 3px rgba(99,102,241,0.1);}
-        .select-container::after {content:'▼';position:absolute;right:15px;top:50%;transform:translateY(-50%);color:#6b7280;pointer-events:none;font-size:0.8rem;}
-        .route-info {background:linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%);border-radius:15px;padding:25px;margin:25px 0;border:1px solid #cbd5e0;}
-        .route-details {display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;}
-        .route-text {font-size:1.1rem;font-weight:600;color:#2d3748;}
-        .route-arrow {font-size:1.2rem;color:#6366f1;font-weight:bold;}
-        .price-text {font-size:1.3rem;font-weight:bold;color:#059669;}
-        .capacity-section {text-align:center;margin:30px 0;}
-        .capacity-title {font-size:1.8rem;font-weight:bold;color:#2d3748;margin-bottom:15px;}
-        .capacity-display {display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:15px 30px;border-radius:20px;font-size:2rem;font-weight:bold;box-shadow:0 10px 25px rgba(102,126,234,0.3);margin-bottom:10px;}
-        .capacity-bar {width:100%;height:12px;background:#e2e8f0;border-radius:6px;overflow:hidden;margin-top:10px;}
-        .capacity-fill {height:100%;transition:width 0.5s ease;border-radius:6px;}
-        .capacity-status {margin-top:8px;font-size:0.9rem;color:#6b7280;}
-        .button-group {display:flex;gap:15px;margin-top:40px;}
-        .btn {flex:1;padding:18px;border:none;border-radius:15px;font-size:1.1rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all 0.3s ease;position:relative;overflow:hidden;}
-        .btn-buy {background:linear-gradient(135deg,#10b981 0%,#059669 100%);color:white;box-shadow:0 8px 20px rgba(16,185,129,0.3);}
-        .btn-buy:hover {transform:translateY(-3px);box-shadow:0 12px 25px rgba(16,185,129,0.4);}
-        .btn-buy:disabled {background:#9ca3af;cursor:not-allowed;transform:none;box-shadow:none;}
-        .btn-cancel {background:linear-gradient(135deg,#ef4444 0%,#dc2626 100%);color:white;box-shadow:0 8px 20px rgba(239,68,68,0.3);}
-        .btn-cancel:hover {transform:translateY(-3px);box-shadow:0 12px 25px rgba(239,68,68,0.4);}
-        .btn:active {transform:translateY(0);}
-        .loading {display:inline-block;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
-        .spinner {width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin 1s ease-in-out infinite;}
-        @keyframes spin {to{transform:rotate(360deg);}}
-        .modal {display:${modal.show ? "block" : "none"};position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);backdrop-filter:blur(5px);}
-        .modal-content {background:white;margin:15% auto;padding:30px;border-radius:20px;width:90%;max-width:400px;text-align:center;box-shadow:0 25px 50px rgba(0,0,0,0.2);}
-        .modal-icon {font-size:4rem;color:#10b981;margin-bottom:20px;}
-        .modal-title {font-size:1.5rem;font-weight:bold;color:#2d3748;margin-bottom:15px;}
-        .modal-text {color:#6b7280;margin-bottom:25px;line-height:1.5;}
-        .modal-btn {background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;padding:12px 30px;border-radius:10px;font-weight:600;cursor:pointer;transition:all 0.3s ease;}
-        .modal-btn:hover {transform:translateY(-2px);box-shadow:0 8px 20px rgba(102,126,234,0.3);}
-        @media (max-width:480px){.container{margin:10px;padding:25px 20px;}.title{font-size:2rem;}.form-row{flex-direction:column;gap:15px;}.button-group{flex-direction:column;}.capacity-display{font-size:1.5rem;padding:12px 25px;}}
-      `}</style>
       <div className="buyticket-bg">
         <div className="bg-decoration"></div>
         <div className="bg-decoration"></div>
@@ -226,7 +190,7 @@ export default function BuyTicket() {
         <div className="container">
           <h1 className="title">Buy Ticket</h1>
           <form onSubmit={handleSubmit} autoComplete="off">
-            <div className="form-section">
+            <div className="form-section-buyTicket">
               <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="startStation">Start</label>
@@ -347,10 +311,9 @@ export default function BuyTicket() {
         </div>
         {/* Modal */}
         <div
-          className="modal"
-          style={{ display: modal.show ? "block" : "none" }}
+          className={`modal ${modal.show ? 'modal-visible' : 'modal-hidden'}`}
           onClick={(e) => {
-            if (e.target.className === "modal") closeModal();
+            if (e.target.className.includes('modal') && !e.target.className.includes('modal-content')) closeModal();
           }}
         >
           <div className="modal-content">

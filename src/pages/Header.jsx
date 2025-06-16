@@ -23,28 +23,28 @@ export default function Header({
           <ul className="nav-menu" id="navMenu">
             <li>
               {onTransportasiClick ? (
-                <button className="nav-btn" onClick={onTransportasiClick}>Transportasi</button>
+                <a className="nav-btn" onClick={onTransportasiClick}>Transportasi</a>
               ) : (
                 <a href="#transportasi">Transportasi</a>
               )}
             </li>
             <li>
               {onRouteClick ? (
-                <button className="nav-btn" onClick={onRouteClick}>Route</button>
+                <a className="nav-btn" onClick={onRouteClick}>Route</a>
               ) : (
                 <a href="#route">Route</a>
               )}
             </li>
             <li>
               {onCapacityClick ? (
-                <button className="nav-btn" onClick={onCapacityClick}>Capacity</button>
+                <a className="nav-btn" onClick={onCapacityClick}>Capacity</a>
               ) : (
                 <a href="#ticket">Capacity</a>
               )}
             </li>
             <li>
               {onBuyTicketClick ? (
-                <button className="nav-btn" onClick={onBuyTicketClick}>Buy Ticket</button>
+                <a className="nav-btn" onClick={onBuyTicketClick}>Buy Ticket</a>
               ) : (
                 <a href="#ticket">Buy Ticket</a>
               )}
